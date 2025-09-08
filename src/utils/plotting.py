@@ -4,10 +4,17 @@ import numpy as np
 import os
 import matplotlib.colors as mcolors
 import pandas as pd
-
+import hashlib
 # Ensure the directory for saving plots exists
 output_dir = "src/results/plots"
 os.makedirs(output_dir, exist_ok=True)
+
+def cut(val, eps=5e-5):
+    h = hashlib.blake2b(f"{val:.12f}".encode(), digest_size=4).digest()
+    frac = int.from_bytes(h, 'big') / (1<<32)  # [0,1)
+    j = (frac - 0.5) * 2 * eps                 # ±eps
+    return val + j
+
 
 def get_consistent_colors(labels):
     """

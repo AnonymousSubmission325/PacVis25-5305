@@ -44,21 +44,20 @@ def circular_projection_pso(points, maxiter=6000, swarmsize=3000, max_time=None,
         A result object containing the projection and metadata.
     """
 
-    # Make sure we are dealing with a numpy array
     points = np.array(points)
 
-    # Number of data points
+
     n = points.shape[0]
 
-    # Calculate the mean for each axis and center the points
+
     mean = np.mean(points, axis=0)
     points = points - mean
 
-    # Calculate distances in the high-dimensional space using cosine distance
-    hd_dist_mat = cosine_distances(points)
-    hd_dist_mat = hd_dist_mat / 2  # Normalize to [0, 1]
 
-    # Store the loss records for tracking
+    hd_dist_mat = cosine_distances(points)
+    hd_dist_mat = hd_dist_mat / 2  
+
+
     loss_records = []
 
     def compute_ld_dist_matrix(ld_points):
@@ -75,11 +74,10 @@ def circular_projection_pso(points, maxiter=6000, swarmsize=3000, max_time=None,
         loss_records.append(loss_value)
         return loss_value
 
-    # Lower and upper bounds for the 1D embedding
     lb = np.zeros(n)
     ub = np.ones(n)
 
-    # Start the timer for the time constraint
+
     start_time = time.time()
 
     def timed_pso_loss(ld_points):
@@ -89,14 +87,12 @@ def circular_projection_pso(points, maxiter=6000, swarmsize=3000, max_time=None,
         return loss(ld_points)
 
     try:
-        # Perform PSO to minimize the loss function
         pso_res, pso_loss = pso(timed_pso_loss, lb, ub, maxiter=maxiter, swarmsize=swarmsize, **kwargs)
     except TimeoutError as e:
         print(e)
-        pso_res = np.zeros(n)  # Return a default result if time limit is exceeded
-        pso_loss = float('inf')  # Assign a high loss value
+        pso_res = np.zeros(n) 
+        pso_loss = float('inf')  
 
-    # Calculate the circle coordinates from the low-dimensional embedding
     circle_x = np.cos(pso_res * 2 * np.pi)
     circle_y = np.sin(pso_res * 2 * np.pi)
 
@@ -109,10 +105,5 @@ def circular_projection_pso(points, maxiter=6000, swarmsize=3000, max_time=None,
         ld_dist_matrix=compute_ld_dist_matrix(pso_res.reshape(-1, 1)),
         pso_res=pso_res
     )
-
-# Example usage:
-# points = np.random.rand(100, 5)
-# result = circular_projection_pso(points, max_time=60)  # Limit the optimization to 60 seconds
-# print(result.circle_x, result.circle_y)
 
 

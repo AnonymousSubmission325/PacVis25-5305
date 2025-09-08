@@ -5,7 +5,7 @@ from sklearn.metrics.pairwise import cosine_distances
 import pandas as pd
 import os
 
-# cPro with Adam optimizer
+# sMDS with Adam optimizer
 class AdamCircularProjectionResult:
     def __init__(self, embedding, circle_x, circle_y, loss_records, stress, hd_dist_matrix, ld_dist_matrix):
         self.embedding = embedding
@@ -72,7 +72,7 @@ def create_grid(points, resolution=100):
     grid = np.array(np.meshgrid(x_range, y_range)).T.reshape(-1, 2)
     return grid, x_range, y_range
 
-def evaluate_cpro_on_grid(points, grid_points, lr=0.1, maxiter=100):
+def evaluate_sMDS_on_grid(points, grid_points, lr=0.1, maxiter=100):
     stress_values = np.zeros(len(grid_points))
     for i, grid_point in enumerate(grid_points):
         print(f"Processing grid point {i + 1}/{len(grid_points)}...")

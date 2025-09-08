@@ -117,7 +117,7 @@ from sklearn.metrics.pairwise import cosine_distances
 import pandas as pd
 import time
 
-def run_lbfgs_cpro_loss(points, maxiter=100, max_time=None):
+def run_lbfgs_sMDS_loss(points, maxiter=100, max_time=None):
     """
     Runs the circular projection using L-BFGS optimizer and returns the loss records.
 

@@ -101,8 +101,8 @@ def mds_projection(features, labels):
     mds_proj = mds.fit_transform(features)
     plot_projection(mds_proj, labels, "MDS Projection", "mds_projection.png")
 
-def run_cpro(features, max_iterations=100):
-    """Runs cPro circular projection using simulated annealing."""
+def run_sMDS(features, max_iterations=100):
+    """Runs sMDS circular projection using simulated annealing."""
     n = features.shape[0]
 
     # Compute high-dimensional cosine distances
@@ -137,10 +137,10 @@ def run_cpro(features, max_iterations=100):
     y = np.sin(theta)
     return np.column_stack((x, y))
 
-def plot_cpro(features, labels):
-    """Runs cPro, projects the features, and saves the circular plot."""
-    cpro_proj = run_cpro(features, max_iterations=50)
-    plot_projection(cpro_proj, labels, "cPro Circular Projection", "cpro_projection.png")
+def plot_sMDS(features, labels):
+    """Runs sMDS, projects the features, and saves the circular plot."""
+    sMDS_proj = run_sMDS(features, max_iterations=50)
+    plot_projection(sMDS_proj, labels, "sMDS Circular Projection", "sMDS_projection.png")
 
 def main():
     """Main function to process and plot all projections."""
@@ -167,9 +167,9 @@ def main():
     print("Running MDS projection...")
     mds_projection(features, labels)
 
-    # cPro Projection
-    print("Running cPro projection...")
-    plot_cpro(features, labels)
+    # sMDS Projection
+    print("Running sMDS projection...")
+    plot_sMDS(features, labels)
 
     print(f"All projections are saved in {output_dir}.")
 

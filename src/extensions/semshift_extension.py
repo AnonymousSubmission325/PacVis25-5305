@@ -37,8 +37,8 @@ def get_word_vectors(words, model):
 def compute_global_origin(vectors):
     return np.mean(vectors, axis=0)
 
-# Step 4: cPro Implementation
-def run_cpro(vectors, max_iterations=100):
+# Step 4: sMDS Implementation
+def run_sMDS(vectors, max_iterations=100):
     n = vectors.shape[0]
 
     # Compute high-dimensional cosine distances
@@ -73,7 +73,7 @@ def run_cpro(vectors, max_iterations=100):
     return optimized_layout
 
 # Step 5: Visualize Results
-def visualize_cpro_with_similarity(labels, projection, similarities, output_file):
+def visualize_sMDS_with_similarity(labels, projection, similarities, output_file):
     # Normalize to enforce radial projection
     radii = np.linalg.norm(projection, axis=1)
     projection = projection / radii[:, None]  # Normalize to unit circle
@@ -104,7 +104,7 @@ def visualize_cpro_with_similarity(labels, projection, similarities, output_file
     plt.grid(False)
 
     # Add title and labels
-    plt.title(f"Radial cPro Visualization for Semantic Space of Selected Words", fontsize=14)
+    plt.title(f"Radial sMDS Visualization for Semantic Space of Selected Words", fontsize=14)
     plt.xlabel("Dimension 1", fontsize=12)
     plt.ylabel("Dimension 2", fontsize=12)
 
@@ -130,10 +130,10 @@ if __name__ == "__main__":
     print("Calculating similarities to global origin...")
     similarities = cosine_similarity(word_vectors, [global_origin]).flatten()
 
-    print("Running cPro...")
-    projection = run_cpro(word_vectors)
+    print("Running sMDS...")
+    projection = run_sMDS(word_vectors)
 
     print("Visualizing results...")
-    output_file = os.path.join(OUTPUT_DIR, "cpro_semantic_space.png")
-    visualize_cpro_with_similarity(valid_words, projection, similarities, output_file)
+    output_file = os.path.join(OUTPUT_DIR, "sMDS_semantic_space.png")
+    visualize_sMDS_with_similarity(valid_words, projection, similarities, output_file)
     print(f"Visualization saved to {output_file}.")

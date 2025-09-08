@@ -81,7 +81,7 @@ if __name__ == '__main__':
     mds_1d = MDS(n_components=1, random_state=777)
     ld_data_mds_1d = mds_1d.fit_transform(sample_data[['x', 'y', 'z']])
 
-    # Run evaluation comparing cPro with MDS 2D and MDS 1D
+    # Run evaluation comparing sMDS with MDS 2D and MDS 1D
     other_projections = [
         ('MDS 2D', ld_data_mds_2d),
         ('MDS 1D', ld_data_mds_1d)

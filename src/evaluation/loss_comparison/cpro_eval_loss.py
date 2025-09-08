@@ -4,10 +4,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.datasets import load_iris, make_blobs
 from loss_wrappers import (
-    run_adam_cpro_loss,
-    run_simulated_annealing_cpro_loss,
-    run_lbfgs_cpro_loss,
-    run_pso_cpro_loss
+    run_adam_sMDS_loss,
+    run_simulated_annealing_sMDS_loss,
+    run_lbfgs_sMDS_loss,
+    run_pso_sMDS_loss
 )
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.datasets import make_blobs, make_circles, make_moons
@@ -167,10 +167,10 @@ def collect_loss_records(points, methods_to_run=None, rounds=10, max_iterations=
         Dictionary where keys are method names and values are lists of lists containing loss records for each round.
     """
     methods = {
-        "Adam cPro": run_adam_cpro_loss,
-        "Simulated Annealing cPro": run_simulated_annealing_cpro_loss,
-        "L-BFGS cPro": run_lbfgs_cpro_loss,
-        "PSO cPro": run_pso_cpro_loss
+        "Adam sMDS": run_adam_sMDS_loss,
+        "Simulated Annealing sMDS": run_simulated_annealing_sMDS_loss,
+        "L-BFGS sMDS": run_lbfgs_sMDS_loss,
+        "PSO sMDS": run_pso_sMDS_loss
     }
     methods_to_run = methods_to_run or methods.keys()
     loss_data = {method_name: [] for method_name in methods_to_run}
@@ -183,7 +183,7 @@ def collect_loss_records(points, methods_to_run=None, rounds=10, max_iterations=
                 loss_curve = methods[method_name](points, maxiter=max_iterations)
 
                 # Align initial loss of Simulated Annealing with other methods
-                if method_name == "Simulated Annealing cPro":
+                if method_name == "Simulated Annealing sMDS":
                     # Calculate average initial loss of other methods
                     avg_initial_loss = np.mean(
                         [loss_data[other_method][0][0] for other_method in methods_to_run if loss_data[other_method]]
@@ -195,7 +195,7 @@ def collect_loss_records(points, methods_to_run=None, rounds=10, max_iterations=
                     loss_curve[-1] = min(loss_curve[-1], min([min(data[-1]) for data in loss_data.values() if data]))
 
                 # Apply penalty to non-Simulated Annealing methods
-                elif method_name != "Simulated Annealing cPro":
+                elif method_name != "Simulated Annealing sMDS":
                     loss_curve = [loss * penalty_factor for loss in loss_curve]
 
                 loss_data[method_name].append(loss_curve)
@@ -229,15 +229,15 @@ def plot_loss_comparison(loss_data, dataset_name="Dataset", max_iterations=None,
 
     # Define colors for each method
     colors = {
-        "Adam cPro": "blue",
-        "Simulated Annealing cPro": "orange",
-        "L-BFGS cPro": "green",
-        "PSO cPro": "red"
+        "Adam sMDS": "blue",
+        "Simulated Annealing sMDS": "orange",
+        "L-BFGS sMDS": "green",
+        "PSO sMDS": "red"
     }
 
     # Define a mapping for legend names
     legend_name_mapping = {
-        "Simulated Annealing cPro": "Dual Annealing cPro"
+        "Simulated Annealing sMDS": "Dual Annealing sMDS"
     }
 
     for method_name, all_runs in loss_data.items():
@@ -524,7 +524,7 @@ if __name__ == "__main__":
             loss_data = collect_loss_records(points, rounds=1, max_iterations=2, penalty_factor=1.5)
 
             # Generate synthetic PSO loss curves with variance
-            adam_curve = loss_data["Adam cPro"][0]  # Use the best loss from Adam as baseline
+            adam_curve = loss_data["Adam sMDS"][0]  # Use the best loss from Adam as baseline
             print(f"Generating synthetic PSO loss curves for {dataset_name}...")
 
             # Generate the best PSO curve
@@ -542,7 +542,7 @@ if __name__ == "__main__":
                 num_simulations=10  # Simulate multiple runs
             )
 
-            loss_data["PSO cPro"] = (best_loss_pso, average_loss_pso)
+            loss_data["PSO sMDS"] = (best_loss_pso, average_loss_pso)
 
             # Plot the dataset
             plot_loss_comparison(loss_data, dataset_name, max_iterations=50)

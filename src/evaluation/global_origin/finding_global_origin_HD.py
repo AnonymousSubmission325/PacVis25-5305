@@ -157,9 +157,9 @@ def create_grid(points, resolution=5):
     grid_points = np.array(list(product(*ranges)))
     return grid_points
 
-def evaluate_cpro_on_grid(points, grid_points, lr=0.1, maxiter=100):
+def evaluate_sMDS_on_grid(points, grid_points, lr=0.1, maxiter=100):
     """
-    Evaluates cPro for each grid point and collects the stress values.
+    Evaluates sMDS for each grid point and collects the stress values.
 
     Parameters:
     ----------
@@ -185,7 +185,7 @@ def evaluate_cpro_on_grid(points, grid_points, lr=0.1, maxiter=100):
     for i, grid_point in enumerate(grid_points):
         print(f"Processing grid point {i + 1}/{len(grid_points)}...")
         try:
-            # Evaluate cPro with the grid point as the shift origin
+            # Evaluate sMDS with the grid point as the shift origin
             result = circular_projection_adam(points, shift_point=grid_point, lr=lr, maxiter=maxiter)
             # Store stress with grid point as key
             stress_results[tuple(grid_point)] = result.stress
@@ -372,8 +372,8 @@ if __name__ == "__main__":
     # Create a grid of points in the high-dimensional space with resolution 2
     grid_points = create_grid(points, resolution=10)
 
-    # Evaluate cPro for each grid point and calculate stress
-    stress_results = evaluate_cpro_on_grid(points, grid_points, lr=0.1, maxiter=100)
+    # Evaluate sMDS for each grid point and calculate stress
+    stress_results = evaluate_sMDS_on_grid(points, grid_points, lr=0.1, maxiter=100)
 
     # Print stress results for each grid point
     for grid_point, stress in stress_results.items():

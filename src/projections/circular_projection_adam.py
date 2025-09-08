@@ -40,7 +40,6 @@ def circular_projection_adam(points, lr=0.1, maxiter=20, max_time=None):
     AdamCircularProjectionResult : object
         A result object containing the projection and metadata.
     """
-
     # Convert points to a numpy array if it's a DataFrame
     if isinstance(points, pd.DataFrame):
         points = points.values
@@ -123,7 +122,7 @@ from sklearn.metrics.pairwise import cosine_distances
 import pandas as pd
 import time
 
-def run_adam_cpro_loss(points, lr=0.1, maxiter=100, max_time=None):
+def run_adam_sMDS_loss(points, lr=0.1, maxiter=100, max_time=None):
     """
     Runs the circular projection using Adam optimizer and returns the loss records.
 

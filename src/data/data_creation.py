@@ -108,13 +108,3 @@ def create_high_dimensional_data(n_points=500, n_features=10, n_classes=4):
     sample_data['target'] = labels
 
     return sample_data
-
-def create_multiple_datasets():
-    """
-    Creates multiple datasets for evaluation.
-    """
-    return {
-        # 'blobs_3d': create_blobs_data(n_samples=200, n_features=3, n_clusters=4),
-        # 'high_dimensional': create_high_dimensional_data(n_points=500, n_features=10, n_classes=4),
-        # Add more datasets as needed
-    }

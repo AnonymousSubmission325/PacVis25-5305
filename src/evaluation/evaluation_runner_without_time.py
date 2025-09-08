@@ -28,23 +28,23 @@ def run_all_evaluations(show_plots):
 
         # Simulated Annealing-based circular projection
         start_sa = time.time()
-        res_cpro_sa = circular_projection(sample_data.drop('target', axis=1))
-        print(f"Simulated Annealing cPro completed in {time.time() - start_sa:.2f} seconds.")
+        res_sMDS_sa = circular_projection(sample_data.drop('target', axis=1))
+        print(f"Simulated Annealing sMDS completed in {time.time() - start_sa:.2f} seconds.")
         
         # Adam optimizer-based circular projection
         start_adam = time.time()
-        res_cpro_adam = circular_projection_adam(sample_data.drop('target', axis=1))
-        print(f"Adam cPro completed in {time.time() - start_adam:.2f} seconds.")
+        res_sMDS_adam = circular_projection_adam(sample_data.drop('target', axis=1))
+        print(f"Adam sMDS completed in {time.time() - start_adam:.2f} seconds.")
         
         # PSO-based circular projection
         start_pso = time.time()
-        res_cpro_pso = circular_projection_pso(sample_data.drop('target', axis=1))
-        print(f"PSO cPro completed in {time.time() - start_pso:.2f} seconds.")
+        res_sMDS_pso = circular_projection_pso(sample_data.drop('target', axis=1))
+        print(f"PSO sMDS completed in {time.time() - start_pso:.2f} seconds.")
         
         # L-BFGS-based circular projection
         start_lbfgs = time.time()
-        res_cpro_lbfgs = circular_projection_lbfgs(sample_data.drop('target', axis=1))
-        print(f"L-BFGS cPro completed in {time.time() - start_lbfgs:.2f} seconds.")
+        res_sMDS_lbfgs = circular_projection_lbfgs(sample_data.drop('target', axis=1))
+        print(f"L-BFGS sMDS completed in {time.time() - start_lbfgs:.2f} seconds.")
         
         # SOM-based projection
         start_som = time.time()
@@ -65,10 +65,10 @@ def run_all_evaluations(show_plots):
 
         # Prepare all projections for plotting
         projections = [
-            (f'{dataset_name} - Simulated Annealing cPro', res_cpro_sa),
-            (f'{dataset_name} - Adam cPro', res_cpro_adam),
-            (f'{dataset_name} - PSO cPro', res_cpro_pso),
-            (f'{dataset_name} - L-BFGS cPro', res_cpro_lbfgs),
+            (f'{dataset_name} - Simulated Annealing sMDS', res_sMDS_sa),
+            (f'{dataset_name} - Adam sMDS', res_sMDS_adam),
+            (f'{dataset_name} - PSO sMDS', res_sMDS_pso),
+            (f'{dataset_name} - L-BFGS sMDS', res_sMDS_lbfgs),
             (f'{dataset_name} - SOM', res_som),
             (f'{dataset_name} - MDS 2D', ld_data_mds_2d),
             (f'{dataset_name} - MDS 1D', np.column_stack((ld_data_mds_1d, np.zeros(ld_data_mds_1d.shape[0]))))
@@ -82,14 +82,14 @@ def run_all_evaluations(show_plots):
             ('MDS 2D', ld_data_mds_2d),
             ('MDS 1D', np.column_stack((ld_data_mds_1d, np.zeros(ld_data_mds_1d.shape[0])))),
             ('SOM - Circular Projection', np.column_stack((res_som.circle_x, res_som.circle_y))),
-            ('Simulated Annealing cPro', np.column_stack((res_cpro_sa.circle_x, res_cpro_sa.circle_y))),
-            ('Adam cPro', np.column_stack((res_cpro_adam.circle_x, res_cpro_adam.circle_y))),
-            ('PSO cPro', np.column_stack((res_cpro_pso.circle_x, res_cpro_pso.circle_y))),
-            ('L-BFGS cPro', np.column_stack((res_cpro_lbfgs.circle_x, res_cpro_lbfgs.circle_y)))
+            ('Simulated Annealing sMDS', np.column_stack((res_sMDS_sa.circle_x, res_sMDS_sa.circle_y))),
+            ('Adam sMDS', np.column_stack((res_sMDS_adam.circle_x, res_sMDS_adam.circle_y))),
+            ('PSO sMDS', np.column_stack((res_sMDS_pso.circle_x, res_sMDS_pso.circle_y))),
+            ('L-BFGS sMDS', np.column_stack((res_sMDS_lbfgs.circle_x, res_sMDS_lbfgs.circle_y)))
         ]
 
         start_eval = time.time()
-        run_evaluation(sample_data.drop('target', axis=1), sample_data['target'], res_cpro_sa, other_projections)
+        run_evaluation(sample_data.drop('target', axis=1), sample_data['target'], res_sMDS_sa, other_projections)
         print(f"Evaluation completed in {time.time() - start_eval:.2f} seconds.")
 
 if __name__ == '__main__':

@@ -141,21 +141,21 @@ def load_artificial_datasets():
     
     # List of datasets to load
     dataset_files = {
-        # '2dsphere': "2dsphere_cPro.csv",
-        # '3dsphere': "3dsphere_cPro.csv",
-        # '4dsphere': "4dsphere_cPro.csv",
-        # 'blobs_3d_v1': "blobs_3d_v1_cPro.csv",
-        # 'blobs_3d_v2': "blobs_3d_v2_cPro.csv",
-        # 'blobs_3d_v3': "blobs_3d_v3_cPro.csv",
-        # 'blobs_3d_v4': "blobs_3d_v4_cPro.csv",
-        # 'citations': "citations_cPro.csv",
-        # 'concentric_circles': "concentric_circles_cPro.csv",
-        # 'iris': "iris_cPro.csv",
-        # 'penguins': "penguins_cPro.csv",
-        # 's_curve': "s_curve_cPro.csv",
-        # 'three_circles': "three_circles_cPro.csv",
-        # 'torus': "torus_cPro.csv",
-        # 'unbalanced': "unbalanced_cPro.csv",
+        # '2dsphere': "2dsphere_sMDS.csv",
+        # '3dsphere': "3dsphere_sMDS.csv",
+        # '4dsphere': "4dsphere_sMDS.csv",
+        # 'blobs_3d_v1': "blobs_3d_v1_sMDS.csv",
+        # 'blobs_3d_v2': "blobs_3d_v2_sMDS.csv",
+        # 'blobs_3d_v3': "blobs_3d_v3_sMDS.csv",
+        # 'blobs_3d_v4': "blobs_3d_v4_sMDS.csv",
+        # 'citations': "citations_sMDS.csv",
+        # 'concentric_circles': "concentric_circles_sMDS.csv",
+        # 'iris': "iris_sMDS.csv",
+        # 'penguins': "penguins_sMDS.csv",
+        # 's_curve': "s_curve_sMDS.csv",
+        # 'three_circles': "three_circles_sMDS.csv",
+        # 'torus': "torus_sMDS.csv",
+        # 'unbalanced': "unbalanced_sMDS.csv",
     }
     
     for name, filename in dataset_files.items():

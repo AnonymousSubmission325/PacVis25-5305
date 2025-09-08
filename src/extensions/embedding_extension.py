@@ -42,14 +42,14 @@ def get_distances_from_target(word, related_terms, model):
             print(f"Word '{term}' not found in embeddings. Skipping.")
     return distances
 
-# Step 3: Prepare Data for cPro
+# Step 3: Prepare Data for sMDS
 def prepare_data(distances, model):
     labels = list(distances.keys())
     vectors = np.array([model[word] for word in labels])
     return labels, vectors
 
-# Step 4: cPro Implementation
-def run_cpro(vectors, max_iterations=4):
+# Step 4: sMDS Implementation
+def run_sMDS(vectors, max_iterations=4):
     n = vectors.shape[0]
 
     # Compute high-dimensional cosine distances
@@ -83,7 +83,7 @@ def run_cpro(vectors, max_iterations=4):
     optimized_layout = result.x.reshape(-1, 2)
     return optimized_layout
 
-def visualize_cpro_with_similarity(labels, projection, similarities, output_file):
+def visualize_sMDS_with_similarity(labels, projection, similarities, output_file):
     # Normalize to enforce radial projection
     radii = np.linalg.norm(projection, axis=1)
     projection = projection / radii[:, None]  # Normalize to unit circle
@@ -104,7 +104,7 @@ def visualize_cpro_with_similarity(labels, projection, similarities, output_file
     # Create the plot
     plt.figure(figsize=(10, 10))  # Increased size for better visibility
 
-    # Add a dashed circle representing the cPro radius
+    # Add a dashed circle representing the sMDS radius
     circle = plt.Circle((0, 0), radius=padding_factor, color='gray', fill=False, linestyle='dashed')
     plt.gca().add_artist(circle)
 
@@ -127,7 +127,7 @@ def visualize_cpro_with_similarity(labels, projection, similarities, output_file
     plt.grid(False)
 
     # Add title and labels
-    plt.title(f"Radial cPro Visualization for '{TARGET_WORD}' Related Terms with Similarity Shift", fontsize=14)
+    plt.title(f"Radial sMDS Visualization for '{TARGET_WORD}' Related Terms with Similarity Shift", fontsize=14)
     plt.xlabel("Dimension 1", fontsize=12)
     plt.ylabel("Dimension 2", fontsize=12)
 
@@ -153,12 +153,12 @@ if __name__ == "__main__":
         print(f"Similarity between '{TARGET_WORD}' and '{term}': {distance:.4f}")
     labels, vectors = prepare_data(distances, fasttext_model)
 
-    # Apply cPro
-    print("Running cPro...")
-    projection = run_cpro(vectors)
+    # Apply sMDS
+    print("Running sMDS...")
+    projection = run_sMDS(vectors)
 
     # Visualize
     print("Visualizing results...")
-    output_file = os.path.join(OUTPUT_DIR, f"{TARGET_WORD}_cpro_related_terms_visualization_fixed.png")
-    visualize_cpro_with_similarity(labels, projection, list(distances.values()), output_file)
+    output_file = os.path.join(OUTPUT_DIR, f"{TARGET_WORD}_sMDS_related_terms_visualization_fixed.png")
+    visualize_sMDS_with_similarity(labels, projection, list(distances.values()), output_file)
     print(f"Visualization saved to {output_file}.")

@@ -7,10 +7,10 @@ input_folder = os.path.join(script_dir, "plots")
 output_image = os.path.join(script_dir, "combined_output.jpg")
 
 ordered_filenames = [
-    "wine_-_Simulated_Annealing_cPro_projection.png",
-    "wine_-_Adam_cPro_projection.png",
-    "wine_-_PSO_cPro_projection.png",
-    "wine_-_L-BFGS_cPro_projection.png",
+    "wine_-_Simulated_Annealing_sMDS_projection.png",
+    "wine_-_Adam_sMDS_projection.png",
+    "wine_-_PSO_sMDS_projection.png",
+    "wine_-_L-BFGS_sMDS_projection.png",
     "wine_-_SOM_projection.png",
     "wine_-_Spring-Force_Radial_Projection_projection.png",
     "wine_-_Isomap_2D_projection.png",

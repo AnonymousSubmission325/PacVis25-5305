@@ -4,7 +4,7 @@ import torch
 from sklearn.datasets import load_wine
 from sklearn.metrics.pairwise import cosine_distances
 
-# cPro implementation with Adam optimizer
+# sMDS implementation with Adam optimizer
 class AdamCircularProjectionResult:
     def __init__(self, embedding, circle_x, circle_y, loss_records, stress):
         self.embedding = embedding
@@ -15,7 +15,7 @@ class AdamCircularProjectionResult:
 
 def circular_projection_adam(points, lr=0.1, maxiter=100):
     """
-    Applies the cPro algorithm using Adam optimizer.
+    Applies the sMDS algorithm using Adam optimizer.
 
     Parameters:
     ----------
@@ -82,21 +82,21 @@ if __name__ == "__main__":
     wine_data = load_wine()
     points = wine_data.data
 
-    # Apply cPro
-    print("Running cPro with Adam optimizer...")
+    # Apply sMDS
+    print("Running sMDS with Adam optimizer...")
     result = circular_projection_adam(points, lr=0.1, maxiter=100)
 
     # Plot the results
     plt.figure(figsize=(8, 8))
     plt.scatter(result.circle_x, result.circle_y, c=wine_data.target, cmap="viridis", edgecolor="k", s=50)
-    plt.title("cPro Projection of the Wine Dataset")
+    plt.title("sMDS Projection of the Wine Dataset")
     plt.xlabel("Circular X")
     plt.ylabel("Circular Y")
     plt.axis("equal")
     plt.colorbar(label="Target Class")
     plt.tight_layout()
-    plt.savefig("cpro_wine_projection.png")
+    plt.savefig("sMDS_wine_projection.png")
     plt.show()
 
     print(f"Projection stress: {result.stress:.4f}")
-    print("Projection complete. Plot saved as 'cpro_wine_projection.png'.")
+    print("Projection complete. Plot saved as 'sMDS_wine_projection.png'.")

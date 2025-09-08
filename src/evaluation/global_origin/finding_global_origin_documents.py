@@ -9,7 +9,7 @@ from sklearn.datasets import fetch_20newsgroups
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import PCA
 
-# cPro with Adam optimizer
+# sMDS with Adam optimizer
 class AdamCircularProjectionResult:
     def __init__(self, embedding, circle_x, circle_y, loss_records, stress, hd_dist_matrix, ld_dist_matrix):
         self.embedding = embedding
@@ -85,7 +85,7 @@ def create_square_grid(points, resolution=100, padding_ratio=0.05):
     grid = np.array(np.meshgrid(x_range, y_range)).T.reshape(-1, 2)
     return grid, x_range, y_range
 
-def evaluate_cpro_on_grid(points, grid_points, lr=0.1, maxiter=100):
+def evaluate_sMDS_on_grid(points, grid_points, lr=0.1, maxiter=100):
     stress_values = np.zeros(len(grid_points))
     for i, grid_point in enumerate(grid_points):
         print(f"Processing grid point {i + 1}/{len(grid_points)}...")
@@ -161,13 +161,13 @@ if __name__ == "__main__":
         stress_values = stress_data['stress'].values
         if len(stress_values) != len(grid_x) * len(grid_y):
             print("Mismatch detected! Recomputing stress values...")
-            stress_values = evaluate_cpro_on_grid(points, grid_points, lr=0.1, maxiter=40)
+            stress_values = evaluate_sMDS_on_grid(points, grid_points, lr=0.1, maxiter=40)
             stress_data = pd.DataFrame(grid_points, columns=["dim_1", "dim_2"])
             stress_data["stress"] = stress_values
             stress_data.to_csv(stress_csv_file, index=False)
     else:
         print("Evaluating stress values on square grid...")
-        stress_values = evaluate_cpro_on_grid(points, grid_points, lr=0.1, maxiter=50)
+        stress_values = evaluate_sMDS_on_grid(points, grid_points, lr=0.1, maxiter=50)
         stress_data = pd.DataFrame(grid_points, columns=["dim_1", "dim_2"])
         stress_data["stress"] = stress_values
         stress_data.to_csv(stress_csv_file, index=False)

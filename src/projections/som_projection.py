@@ -627,7 +627,7 @@ def som_projection(points, lr=0.1, sigma=1.0, maxiter=10000, max_time=None, show
     circle_x = torch.cos(theta)
     circle_y = torch.sin(theta)
 
-    # Set up a color palette similar to the one used for cPro
+    # Set up a color palette similar to the one used for sMDS
     palette = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"]
     colors = [palette[label] for label in labels] if labels is not None else 'blue'
 

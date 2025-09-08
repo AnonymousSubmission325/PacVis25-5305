@@ -11,19 +11,23 @@ from src.projections.circular_projection_pso import PSOCircularProjectionResult
 from src.projections.circular_projection_lbfgs import LbfgsCircularProjectionResult
 from src.projections.tow import SpringForceProjectionResult
 
-def calculate_stress(hd_distances, ld_distances):
+def calculate_stress(hd_data, ld_data):
+    hd_distances = cosine_distances(hd_data)
+    ld_distances = cosine_distances(ld_data)
     return np.sqrt(np.sum((hd_distances - ld_distances) ** 2) / np.sum(hd_distances ** 2))
 
-def calculate_correlation(hd_distances, ld_distances):
+def calculate_correlation(hd_data, ld_data):
+    hd_distances = cosine_distances(hd_data)
+    ld_distances = cosine_distances(ld_data)
     return pearsonr(hd_distances.flatten(), ld_distances.flatten())[0]
 
-def calculate_trustworthiness(x_high, x_low, n_neighbors=5, distance='cosine'):
+def calculate_trustworthiness(x_high, x_low, n_neighbors=5):
     n = x_high.shape[0]
 
-    nn_orig = NearestNeighbors(n_neighbors=n_neighbors + 1, metric=distance).fit(x_high)
+    nn_orig = NearestNeighbors(n_neighbors=n_neighbors + 1, metric='cosine').fit(x_high)
     _, indices_orig = nn_orig.kneighbors(x_high)
 
-    nn_proj = NearestNeighbors(n_neighbors=n_neighbors, metric=distance).fit(x_low)
+    nn_proj = NearestNeighbors(n_neighbors=n_neighbors, metric='cosine').fit(x_low)
     _, indices_proj = nn_proj.kneighbors(x_low)
 
     rank_matrix = np.full((n, n_neighbors), n)
@@ -39,7 +43,7 @@ def calculate_trustworthiness(x_high, x_low, n_neighbors=5, distance='cosine'):
                            np.sum(rank_matrix[rank_matrix > 0]))
     return trustworthiness
 
-def calculate_average_distance(x, distance='cosine'):
+def calculate_average_distance(x):
     dist = cosine_distances(x)
     return np.mean(dist)
 
@@ -66,10 +70,10 @@ def convert_projection_to_array(projection):
 def calculate_continuity(hd_data, ld_data, n_neighbors=5):
     n = hd_data.shape[0]
 
-    nn_hd = NearestNeighbors(n_neighbors=n_neighbors + 1).fit(hd_data)
+    nn_hd = NearestNeighbors(n_neighbors=n_neighbors + 1, metric='cosine').fit(hd_data)
     _, indices_hd = nn_hd.kneighbors(hd_data)
 
-    nn_ld = NearestNeighbors(n_neighbors=n_neighbors + 1).fit(ld_data)
+    nn_ld = NearestNeighbors(n_neighbors=n_neighbors + 1, metric='cosine').fit(ld_data)
     _, indices_ld = nn_ld.kneighbors(ld_data)
 
     continuity = 0
@@ -84,7 +88,7 @@ def calculate_continuity(hd_data, ld_data, n_neighbors=5):
 def calculate_neighborhood_hit(hd_data, ld_data, labels, n_neighbors=5):
     n = ld_data.shape[0]
 
-    nn = NearestNeighbors(n_neighbors=n_neighbors + 1).fit(ld_data)
+    nn = NearestNeighbors(n_neighbors=n_neighbors + 1, metric='cosine').fit(ld_data)
     _, indices = nn.kneighbors(ld_data)
 
     neighborhood_hit = 0
@@ -101,10 +105,10 @@ def calculate_shepard_goodness(hd_distances, ld_distances):
 def calculate_distance_consistency(hd_data, ld_data, n_neighbors=5):
     n = hd_data.shape[0]
 
-    nn_hd = NearestNeighbors(n_neighbors=n_neighbors + 1).fit(hd_data)
+    nn_hd = NearestNeighbors(n_neighbors=n_neighbors + 1, metric='cosine').fit(hd_data)
     _, indices_hd = nn_hd.kneighbors(hd_data)
 
-    nn_ld = NearestNeighbors(n_neighbors=n_neighbors + 1).fit(ld_data)
+    nn_ld = NearestNeighbors(n_neighbors=n_neighbors + 1, metric='cosine').fit(ld_data)
     _, indices_ld = nn_ld.kneighbors(ld_data)
 
     consistency = 0
@@ -133,11 +137,11 @@ def run_evaluation(hd_data, labels, circular_proj_res: CircularProjectionResult,
     hd_cosine_dist = cosine_distances(hd_data)
     ld_cosine_dist_circle = cosine_distances(ld_data_circle)
 
-    stress_cosine_circle = calculate_stress(hd_cosine_dist, ld_cosine_dist_circle)
-    correlation_cosine_circle = calculate_correlation(hd_cosine_dist, ld_cosine_dist_circle)
+    stress_cosine_circle = calculate_stress(hd_data, ld_data_circle)
+    correlation_cosine_circle = calculate_correlation(hd_data, ld_data_circle)
     silhouette_cosine_circle = silhouette_score(ld_data_circle, labels, metric='cosine')
-    trust_cosine_circle = calculate_trustworthiness(hd_data, ld_data_circle, distance='cosine')
-    avg_dist_cosine_circle = calculate_average_distance(ld_data_circle, distance='cosine')
+    trust_cosine_circle = calculate_trustworthiness(hd_data, ld_data_circle)
+    avg_dist_cosine_circle = calculate_average_distance(ld_data_circle)
     continuity_circle = calculate_continuity(hd_data, ld_data_circle)
     neighborhood_hit_circle = calculate_neighborhood_hit(hd_data, ld_data_circle, labels)
     shepard_goodness_circle = calculate_shepard_goodness(hd_cosine_dist, ld_cosine_dist_circle)
@@ -162,11 +166,11 @@ def run_evaluation(hd_data, labels, circular_proj_res: CircularProjectionResult,
 
         ld_cosine_dist_other = cosine_distances(ld_data_other)
 
-        stress_cosine_other = calculate_stress(hd_cosine_dist, ld_cosine_dist_other)
-        correlation_cosine_other = calculate_correlation(hd_cosine_dist, ld_cosine_dist_other)
+        stress_cosine_other = calculate_stress(hd_data, ld_data_other)
+        correlation_cosine_other = calculate_correlation(hd_data, ld_data_other)
         silhouette_cosine_other = silhouette_score(ld_data_other, labels, metric='cosine')
-        trust_cosine_other = calculate_trustworthiness(hd_data, ld_data_other, distance='cosine')
-        avg_dist_cosine_other = calculate_average_distance(ld_data_other, distance='cosine')
+        trust_cosine_other = calculate_trustworthiness(hd_data, ld_data_other)
+        avg_dist_cosine_other = calculate_average_distance(ld_data_other)
         continuity_other = calculate_continuity(hd_data, ld_data_other)
         neighborhood_hit_other = calculate_neighborhood_hit(hd_data, ld_data_other, labels)
         shepard_goodness_other = calculate_shepard_goodness(hd_cosine_dist, ld_cosine_dist_other)
@@ -184,18 +188,6 @@ def run_evaluation(hd_data, labels, circular_proj_res: CircularProjectionResult,
         distance_consistency_values.append(distance_consistency_other)
 
         print(f"Finished with {name}")
-
-    print(f"{'Metric':<25} | " + " | ".join(f"{name:>20}" for name in technique_names))
-    print("-" * (25 + len(technique_names) * 24))
-    print(f"{'Cosine - Stress':<25} | " + " | ".join(f"{val:20.3f}" for val in stress_values))
-    print(f"{'Cosine - Correlation':<25} | " + " | ".join(f"{val:20.3f}" for val in correlation_values))
-    print(f"{'Cosine - Silhouette':<25} | " + " | ".join(f"{val:20.3f}" for val in silhouette_values))
-    print(f"{'Cosine - Trustworthiness':<25} | " + " | ".join(f"{val:20.3f}" for val in trust_values))
-    print(f"{'Cosine - Avg. Distance':<25} | " + " | ".join(f"{val:20.3f}" for val in avg_dist_values))
-    print(f"{'Continuity':<25} | " + " | ".join(f"{val:20.3f}" for val in continuity_values))
-    print(f"{'Neighborhood Hit':<25} | " + " | ".join(f"{val:20.3f}" for val in neighborhood_hit_values))
-    print(f"{'Shepard Goodness':<25} | " + " | ".join(f"{val:20.3f}" for val in shepard_goodness_values))
-    print(f"{'Distance Consistency':<25} | " + " | ".join(f"{val:20.3f}" for val in distance_consistency_values))
 
     metrics = {
         'technique_names': technique_names,

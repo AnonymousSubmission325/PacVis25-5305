@@ -21,7 +21,7 @@ def compute_ld_dist_matrix(ld_points, n):
     dist_matrix = distance_matrix(ld_points, ld_points, p=1)
     return np.minimum(dist_matrix, 1 - dist_matrix)
 
-def run_simulated_annealing_cpro_loss(points, maxiter=1000, max_time=None):
+def run_simulated_annealing_sMDS_loss(points, maxiter=1000, max_time=None):
     points = np.array(points)
     n = points.shape[0]
     hd_dist_mat = compute_hd_distances(points)
@@ -45,7 +45,7 @@ def run_simulated_annealing_cpro_loss(points, maxiter=1000, max_time=None):
     return loss_records
 
 
-def run_pso_cpro_loss(points, maxiter=6000, swarmsize=3000, max_time=None, **kwargs):
+def run_pso_sMDS_loss(points, maxiter=6000, swarmsize=3000, max_time=None, **kwargs):
     """
     Optimizes circular projection using particle swarm optimization (PSO).
     """
@@ -71,7 +71,7 @@ def run_pso_cpro_loss(points, maxiter=6000, swarmsize=3000, max_time=None, **kwa
 
     return loss_records
 
-def run_lbfgs_cpro_loss(points, lr=0.1, maxiter=100, max_time=None):
+def run_lbfgs_sMDS_loss(points, lr=0.1, maxiter=100, max_time=None):
     """
     Optimizes circular projection using L-BFGS.
     """
@@ -108,7 +108,7 @@ def run_lbfgs_cpro_loss(points, lr=0.1, maxiter=100, max_time=None):
 
     return loss_records
 
-def run_adam_cpro_loss(points, lr=0.1, maxiter=100, max_time=None):
+def run_adam_sMDS_loss(points, lr=0.1, maxiter=100, max_time=None):
     """
     Optimizes circular projection using Adam optimizer.
     """

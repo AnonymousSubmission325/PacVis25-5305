@@ -6,9 +6,9 @@ import torch
 from scipy.optimize import dual_annealing
 
 
-def run_cpro(points, max_iterations=100):
+def run_sMDS(points, max_iterations=100):
     """
-    Runs the cPro optimizer (Simulated Annealing-based circular projection).
+    Runs the sMDS optimizer (Simulated Annealing-based circular projection).
 
     Parameters:
     ----------
@@ -59,9 +59,9 @@ def run_cpro(points, max_iterations=100):
     return loss_records
 
 
-def run_cpro_plus(points, lr=0.1, max_iterations=100):
+def run_sMDS_plus(points, lr=0.1, max_iterations=100):
     """
-    Runs the cPro+ optimizer (Adam-based circular projection).
+    Runs the sMDS+ optimizer (Adam-based circular projection).
 
     Parameters:
     ----------
@@ -133,20 +133,20 @@ def load_sample_data():
     return {"Iris Dataset": iris_data["data"]}
 
 
-def plot_comparison(dataset_name, loss_records_cpro, loss_records_cpro_plus, save_dir="results"):
+def plot_comparison(dataset_name, loss_records_sMDS, loss_records_sMDS_plus, save_dir="results"):
     """
-    Plots the loss values for cPro and cPro+ optimizers.
+    Plots the loss values for sMDS and sMDS+ optimizers.
 
     Parameters:
     ----------
     dataset_name : str
         Name of the dataset.
 
-    loss_records_cpro : list
-        The loss values recorded during the cPro optimization process.
+    loss_records_sMDS : list
+        The loss values recorded during the sMDS optimization process.
 
-    loss_records_cpro_plus : list
-        The loss values recorded during the cPro+ optimization process.
+    loss_records_sMDS_plus : list
+        The loss values recorded during the sMDS+ optimization process.
 
     save_dir : str, optional
         Directory to save the plot.
@@ -154,14 +154,14 @@ def plot_comparison(dataset_name, loss_records_cpro, loss_records_cpro_plus, sav
     os.makedirs(save_dir, exist_ok=True)
     plt.figure(figsize=(8, 6))
 
-    plt.plot(loss_records_cpro, label="cPro Loss (Simulated Annealing)", linewidth=2, color="red")
-    plt.plot(loss_records_cpro_plus, label="cPro+ Loss (Adam)", linewidth=2, color="blue")
+    plt.plot(loss_records_sMDS, label="sMDS Loss (Simulated Annealing)", linewidth=2, color="red")
+    plt.plot(loss_records_sMDS_plus, label="sMDS+ Loss (Adam)", linewidth=2, color="blue")
     plt.xlabel("Iteration")
     plt.ylabel("Loss")
     plt.title(f"Loss Curve Comparison - {dataset_name}")
     plt.legend()
 
-    save_path = os.path.join(save_dir, f"{dataset_name.replace(' ', '_')}_cpro_comparison.png")
+    save_path = os.path.join(save_dir, f"{dataset_name.replace(' ', '_')}_sMDS_comparison.png")
     plt.savefig(save_path, bbox_inches="tight")
     print(f"Plot saved to {save_path}")
     plt.close()
@@ -170,13 +170,13 @@ def plot_comparison(dataset_name, loss_records_cpro, loss_records_cpro_plus, sav
 if __name__ == "__main__":
     datasets = load_sample_data()
     for dataset_name, points in datasets.items():
-        print(f"Running cPro and cPro+ on {dataset_name} dataset...")
+        print(f"Running sMDS and sMDS+ on {dataset_name} dataset...")
 
-        print("Running cPro (Simulated Annealing)...")
-        loss_records_cpro = run_cpro(points, max_iterations=100)
+        print("Running sMDS (Simulated Annealing)...")
+        loss_records_sMDS = run_sMDS(points, max_iterations=100)
 
-        print("Running cPro+ (Adam)...")
-        loss_records_cpro_plus = run_cpro_plus(points, lr=0.1, max_iterations=100)
+        print("Running sMDS+ (Adam)...")
+        loss_records_sMDS_plus = run_sMDS_plus(points, lr=0.1, max_iterations=100)
 
-        plot_comparison(dataset_name, loss_records_cpro, loss_records_cpro_plus)
+        plot_comparison(dataset_name, loss_records_sMDS, loss_records_sMDS_plus)
         print(f"Finished processing {dataset_name} dataset.")

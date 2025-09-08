@@ -1,11 +1,22 @@
 # evaluation_runner.py
 
 import time
-from src.data.data_creation import create_multiple_datasets
 from src.data.data_import import load_datasets, load_artificial_datasets   # Import function to load preprocessed datasets
 from src.utils.plotting import plot_original_data, plot_all_projections
 from src.utils.data_export import export_evaluation_results
 from src.evaluation.evaluation import run_evaluation
+
+from src.projections.circular_projection import circular_projection
+from src.projections.circular_projection_adam import circular_projection_adam
+from src.projections.circular_projection_pso import circular_projection_pso
+from src.projections.circular_projection_lbfgs import circular_projection_lbfgs
+from src.projections.circular_projection_som import som_circular_projection
+from src.projections.mds_projection import run_mds_with_time_limit
+from src.projections.som_projection import som_projection
+from src.projections.tow import spring_force_projection
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE, Isomap
+import umap
 
 # Define colors for target labels, used across all plots
 colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"]
@@ -24,14 +35,23 @@ def run_all_evaluations(show_plots, max_time=300, projections_config=None):
     projections_config : list of tuples
         List of projection methods and their configurations.
     """
-    if projections_config is None:
-        raise ValueError("Projections configuration must be provided.")
+    projections_config = [("Simulated Annealing sMDS", circular_projection, {"max_time": None}),
+    ("Adam sMDS", circular_projection_adam, {"max_time": None}),
+    ("PSO sMDS", circular_projection_pso, {"max_time": None}),
+    ("L-BFGS sMDS", circular_projection_lbfgs, {"max_time": None}),
+    ("SOM", som_projection, {"show_plots": False, "labels": None, "max_time": None}),
+    ("Spring-Force Radial Projection", spring_force_projection, {"show_plots": False, "labels": None, "max_time": None}),
+    ("sSOM", som_circular_projection, {"show_plots": False, "labels": None, "max_time": None}),
+    ("MDS 2D", run_mds_with_time_limit, {"n_components": 2, "max_time": None}),
+    ("MDS 1D", run_mds_with_time_limit, {"n_components": 1, "max_time": None}),
+    ("PCA 2D", lambda data: PCA(n_components=2).fit_transform(data), {}),
+    ("PCA 1D", lambda data: PCA(n_components=1).fit_transform(data), {}),
+    ("t-SNE 2D", lambda data: TSNE(n_components=2).fit_transform(data), {}),
+    ("UMAP 2D", lambda data: umap.UMAP(n_components=2).fit_transform(data), {}),
+    ("Isomap 2D", lambda data: Isomap(n_neighbors=5, n_components=2).fit_transform(data), {})]
 
     print("[INFO] Starting full evaluation pipeline...")
     print("[INFO] Loading all datasets...")
-
-    print("[INFO] Creating synthetic datasets...")
-    generated_datasets = create_multiple_datasets()
 
     print("[INFO] Importing real-world datasets...")
     imported_datasets = load_datasets()
@@ -39,7 +59,7 @@ def run_all_evaluations(show_plots, max_time=300, projections_config=None):
     print("[INFO] Loading artificial datasets...")
     artificial_datasets = load_artificial_datasets()
 
-    all_datasets = {**generated_datasets, **imported_datasets, **artificial_datasets}
+    all_datasets = {**imported_datasets, **artificial_datasets}
     print(f"[INFO] Total datasets loaded: {len(all_datasets)}")
 
     all_results = []
@@ -74,10 +94,10 @@ def run_all_evaluations(show_plots, max_time=300, projections_config=None):
                 print(f"[ERROR] Projection '{name}' failed: {e}")
                 continue
 
-        print("[STEP] Plotting all projections...")
-        plot_all_projections(sample_data, projections, show_plots, colors, minimal=False, point_size=50)
-        print("[DONE] All projections plotted.")
-
+        # print("[STEP] Plotting all projections...")
+        # plot_all_projections(sample_data, projections, show_plots, colors, minimal=False, point_size=50)
+        # print("[DONE] All projections plotted.")
+        print(projections)
         print("[STEP] Running evaluation of all projections...")
         start_eval = time.time()
         metrics = run_evaluation(
@@ -92,6 +112,6 @@ def run_all_evaluations(show_plots, max_time=300, projections_config=None):
 
         all_results.append(dataset_metrics)
 
-    print("[INFO] Exporting results to disk...")
-    export_evaluation_results(all_results, max_time)
-    print("[INFO] Evaluation pipeline completed.")
+        print("[INFO] Exporting results to disk...")
+        export_evaluation_results(all_results, all_datasets)
+        print("[INFO] Evaluation pipeline completed.")
