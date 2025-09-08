@@ -24,9 +24,8 @@ From the project root, execute:
 python main.py
 ```
 This script:
-- Loads selected real-world and artificial datasets.
-- Applies projection techniques defined in `PROJECTIONS_CONFIG` in `main.py`.
-- Evaluates each projection.
+- Loads selected real-world and artificial datasets - preselected is only the Wine dataset for a quick execution of the processing pipeline.
+- Evaluates each projection based on the metrics as presented in the corresponding manuscript.
 - Generates plots and saves results in the `results/` folder.
 
 ### Step 3: (Optional) Customize Datasets and Projections
